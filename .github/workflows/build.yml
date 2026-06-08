@@ -1,15 +1,15 @@
-name: Build OpenWrt 17.01.7 MR3220v2 (Final Optimized)
+name: Build OpenWrt 17.01.7 MR3220v2 (Fixed v4 Artifact)
 
 on:
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Menggunakan ubuntu-latest agar lebih cepat dapat slot
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Update ke v4 juga
 
       - name: Install Dependencies
         run: |
@@ -25,13 +25,6 @@ jobs:
         run: |
           cd openwrt-imagebuilder-17.01.7-ar71xx-generic.Linux-x86_64
           
-          # Paket Inti:
-          # 1. LuCI (Web Admin)
-          # 2. USB Tethering Android (RNDIS only)
-          # 3. Extroot Support (Block-mount, FS drivers)
-          # 4. WiFi Support (Ath9k driver + Wpad-mini for WPA encryption)
-          # 5. Hapus Paket Berat (IPv6, PPPoE)
-          
           make image PROFILE=TL-MR3220-v2 PACKAGES="\
             luci luci-base luci-mod-network luci-mod-status luci-mod-system luci-theme-bootstrap \
             kmod-usb-core kmod-usb2 kmod-usb-ohci \
@@ -40,12 +33,11 @@ jobs:
             kmod-ath9k wpad-mini \
             -ppp -ppp-mod-pppoe -kmod-ppp -kmod-pppoe \
             -odhcp6c -odhcpd -ip6tables -kmod-ip6tables \
-            -relayd \
             "
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4 # GANTI DARI v3 KE v4
         with:
-          name: OpenWrt-17.01.7-MR3220v2-Final
+          name: OpenWrt-17.01.7-MR3220v2-Final-Fixed
           path: openwrt-imagebuilder-17.01.7-ar71xx-generic.Linux-x86_64/bin/targets/ar71xx/generic/*squashfs*
           
